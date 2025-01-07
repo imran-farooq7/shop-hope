@@ -12,8 +12,6 @@ interface Product {
 	rating: number;
 	numReviews: number;
 	stock: number;
-	isFeatured: boolean;
-	banner: null;
 }
 const ProductCard = ({ product }: { product: Product }) => {
 	return (

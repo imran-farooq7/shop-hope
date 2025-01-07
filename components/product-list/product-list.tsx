@@ -14,8 +14,6 @@ const ProductList = ({
 		rating: number;
 		numReviews: number;
 		stock: number;
-		isFeatured: boolean;
-		banner: null;
 	}[];
 }) => {
 	return (

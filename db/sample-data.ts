@@ -12,8 +12,6 @@ const sampleData = {
 			rating: 4.5,
 			numReviews: 10,
 			stock: 5,
-			isFeatured: false,
-			banner: null,
 		},
 		{
 			name: "Xioami Redmi 9t",
@@ -27,8 +25,6 @@ const sampleData = {
 			rating: 4.2,
 			numReviews: 8,
 			stock: 10,
-			isFeatured: false,
-			banner: null,
 		},
 		{
 			name: "Samsung Galaxy A12",
@@ -42,8 +38,6 @@ const sampleData = {
 			rating: 4.9,
 			numReviews: 3,
 			stock: 0,
-			isFeatured: false,
-			banner: null,
 		},
 		{
 			name: "Tecno Pova Neo",
@@ -57,8 +51,6 @@ const sampleData = {
 			rating: 3.6,
 			numReviews: 5,
 			stock: 10,
-			isFeatured: false,
-			banner: null,
 		},
 		{
 			name: "Tecno Spark",
@@ -72,8 +64,6 @@ const sampleData = {
 			rating: 4.7,
 			numReviews: 18,
 			stock: 6,
-			isFeatured: false,
-			banner: null,
 		},
 		{
 			name: "Tecno Spark 7",
@@ -86,9 +76,7 @@ const sampleData = {
 			brand: "Tecno",
 			rating: 4.6,
 			numReviews: 12,
-			stock: 8,
-			isFeatured: true,
-			banner: null,
+			stock: 5,
 		},
 		{
 			name: "Marshmallow Fleece black hoodie for Men",
@@ -102,8 +90,6 @@ const sampleData = {
 			rating: 4.6,
 			numReviews: 12,
 			stock: 8,
-			isFeatured: true,
-			banner: null,
 		},
 		{
 			name: "Adidas Originals T-Shirts",
@@ -116,9 +102,7 @@ const sampleData = {
 			brand: "Adidas",
 			rating: 4.6,
 			numReviews: 12,
-			stock: 8,
-			isFeatured: true,
-			banner: null,
+			stock: 4,
 		},
 	],
 };
