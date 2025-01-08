@@ -1,21 +1,8 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import ProductCard from "../product-card/product-card";
+import { Product } from "@prisma/client";
 
-const ProductList = ({
-	products,
-}: {
-	products: {
-		name: string;
-		slug: string;
-		category: string;
-		description: string;
-		images: string;
-		price: number;
-		brand: string;
-		rating: number;
-		numReviews: number;
-		stock: number;
-	}[];
-}) => {
+const ProductList = ({ products }: { products: Product[] }) => {
 	return (
 		<div>
 			<div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">

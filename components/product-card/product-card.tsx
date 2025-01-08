@@ -1,18 +1,7 @@
+import { Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
-interface Product {
-	name: string;
-	slug: string;
-	category: string;
-	description: string;
-	images: string;
-	price: number;
-	brand: string;
-	rating: number;
-	numReviews: number;
-	stock: number;
-}
 const ProductCard = ({ product }: { product: Product }) => {
 	return (
 		<div
@@ -21,7 +10,7 @@ const ProductCard = ({ product }: { product: Product }) => {
 		>
 			<div className="aspect-h-4 aspect-w-3 bg-gray-200 sm:aspect-none group-hover:opacity-75 sm:h-96">
 				<Image
-					src={product.images}
+					src={product.image}
 					alt={product.name}
 					width={300}
 					height={300}
@@ -43,12 +32,12 @@ const ProductCard = ({ product }: { product: Product }) => {
 						{product.stock > 0 ? (
 							<h2 className="text-xl font-bold text-gray-900">
 								<span className="align-super text-base font-medium">$</span>
-								{product.price}
+								{product.price.toString()}
 							</h2>
 						) : (
 							<p className="text-sm text-gray-500">Out of stock</p>
 						)}
-						<p>{product.rating}</p>
+						<p>{product.rating.toString()}</p>
 					</div>
 				</div>
 			</div>

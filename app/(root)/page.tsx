@@ -1,8 +1,9 @@
 import ProductList from "@/components/product-list/product-list";
-import data from "@/db/sample-data";
+import { getProducts } from "@/lib/actions/product.actions";
 
-const Home = () => {
-	return <ProductList products={data.products} />;
+const Home = async () => {
+	const { data } = await getProducts();
+	return <ProductList products={data} />;
 };
 
 export default Home;
