@@ -40,7 +40,9 @@ const Header = () => {
 						<div className="flex h-16 justify-between">
 							<div className="flex">
 								<div className="flex flex-shrink-0 items-center">
-									<h1 className="text-2xl font-bold">Hope Shop</h1>
+									<Link href={"/"} className="text-2xl font-bold">
+										Hope Shop
+									</Link>
 								</div>
 							</div>
 							<div className="sm:ml-6 flex gap-4 sm:gap-8 items-center">
