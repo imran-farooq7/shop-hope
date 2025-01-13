@@ -1,8 +1,7 @@
 "use server";
 import { signIn, signOut } from "@/auth";
-import { isRedirectError } from "next/dist/client/components/redirect-error";
 export const signInCredentials = async (
-	prevState: Record<string, unknown>,
+	prevState: unknown,
 	formData: FormData
 ) => {
 	try {
@@ -14,9 +13,10 @@ export const signInCredentials = async (
 			};
 		}
 	} catch (error: unknown) {
-		if (isRedirectError(error)) {
-			throw new Error();
-		}
+		// if (isRedirectError(error)) {
+		// 	throw new Error();
+		// }
+		console.log(error);
 		return { status: "error", message: "Invalid email or password" };
 	}
 };

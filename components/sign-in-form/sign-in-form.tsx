@@ -1,6 +1,14 @@
+"use client";
+import { signInCredentials } from "@/lib/actions/user.actions";
 import Link from "next/link";
+import { useActionState } from "react";
+import SignInButton from "../shared/button/sign-in-button/sign-in-button";
 
 const SignInForm = () => {
+	const [state, action] = useActionState(signInCredentials, {
+		message: "",
+		status: "",
+	});
 	return (
 		<div className="flex min-h-full flex-1 flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 			<div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -11,7 +19,7 @@ const SignInForm = () => {
 
 			<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
 				<div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-					<form className="space-y-6" action="#">
+					<form className="space-y-6" action={action}>
 						<div>
 							<label
 								htmlFor="email"
@@ -75,15 +83,13 @@ const SignInForm = () => {
 						</div>
 
 						<div>
-							<button
-								type="submit"
-								className="flex w-full justify-center rounded-md bg-emerald-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-							>
-								Sign in
-							</button>
+							<SignInButton />{" "}
 						</div>
 					</form>
 				</div>
+				{state && state.status === "error" && (
+					<p className="text-red-600 text-center">{state.message}</p>
+				)}
 
 				<p className="mt-10 text-center text-sm text-gray-500">
 					Don't have an account?{" "}
