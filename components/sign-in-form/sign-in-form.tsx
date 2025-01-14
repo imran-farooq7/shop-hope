@@ -3,12 +3,15 @@ import { signInCredentials } from "@/lib/actions/user.actions";
 import Link from "next/link";
 import { useActionState } from "react";
 import SignInButton from "../shared/button/sign-in-button/sign-in-button";
+import { useSearchParams } from "next/navigation";
 
 const SignInForm = () => {
 	const [state, action] = useActionState(signInCredentials, {
 		message: "",
 		status: "",
 	});
+	const searchParams = useSearchParams();
+	const callbackUrl = searchParams.get("callbackUrl") || "/";
 	return (
 		<div className="flex min-h-full flex-1 flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
 			<div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -20,6 +23,7 @@ const SignInForm = () => {
 			<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
 				<div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
 					<form className="space-y-6" action={action}>
+						<input type="hidden" name="callbackUrl" value={callbackUrl} />
 						<div>
 							<label
 								htmlFor="email"
