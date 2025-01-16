@@ -1,37 +1,11 @@
 "use client";
-import {
-	Transition,
-	Dialog,
-	TransitionChild,
-	DialogPanel,
-	TabGroup,
-	TabList,
-	Tab,
-	TabPanels,
-	TabPanel,
-	Disclosure,
-	DisclosureButton,
-	DisclosurePanel,
-	MenuButton,
-	MenuItem,
-	MenuItems,
-	Menu,
-} from "@headlessui/react";
-import {
-	ShoppingCart,
-	UserIcon,
-	CrossIcon,
-	BellIcon,
-	Menu as HamburgerMenu,
-	X,
-} from "lucide-react";
+import { Disclosure } from "@headlessui/react";
+import { ShoppingCart, UserIcon } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
-function classNames(...classes: string[]) {
-	return classes.filter(Boolean).join(" ");
-}
-const Header = () => {
-	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+import UserMenu from "./user-menu";
+import { User } from "next-auth";
+
+const Header = ({ user }: { user: User }) => {
 	return (
 		<Disclosure as="nav" className="bg-white shadow">
 			{({ open }) => (
@@ -50,12 +24,16 @@ const Header = () => {
 									<ShoppingCart className="text-black" />
 									<span>Cart</span>
 								</Link>
-								<Link
-									href={"/sign-in"}
-									className="flex bg-emerald-500 text-white hover:bg-emerald-700 rounded-lg py-2 px-4 gap-1"
-								>
-									<UserIcon /> <span>Sign in</span>
-								</Link>
+								{user ? (
+									<UserMenu user={user} />
+								) : (
+									<Link
+										href={"/sign-in"}
+										className="flex bg-emerald-500 text-white hover:bg-emerald-700 rounded-lg py-2 px-4 gap-1"
+									>
+										<UserIcon /> <span>Sign in</span>
+									</Link>
+								)}
 							</div>
 						</div>
 					</div>
