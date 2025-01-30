@@ -2,6 +2,7 @@
 import { signIn, signOut } from "@/auth";
 import { prisma } from "@/prisma/prisma";
 import { hashSync } from "bcryptjs";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 export const signInCredentials = async (
 	prevState: unknown,
 	formData: FormData
@@ -14,10 +15,10 @@ export const signInCredentials = async (
 				message: "Sign in successfully",
 			};
 		}
-	} catch (error: unknown) {
-		// if (isRedirectError(error)) {
-		// 	throw new Error();
-		// }
+	} catch (error) {
+		if (isRedirectError(error)) {
+			throw error;
+		}
 		console.log(error);
 		return { status: "error", message: "Invalid email or password" };
 	}
@@ -55,13 +56,18 @@ export const signUpUser = async (prevState: unknown, formData: FormData) => {
 			password: hashedPassword,
 		};
 		await prisma.user.create({ data: user });
-		await signIn("credentials", { email: user.email, password });
+		await signIn("credentials", {
+			email: user.email,
+			password,
+		});
 		return {
 			status: "success",
 			message: "User register successfully",
 		};
 	} catch (error) {
-		console.log(error);
+		if (isRedirectError(error)) {
+			throw error;
+		}
 		return { status: "error", message: "User registration failed" };
 	}
 };

@@ -1,6 +1,6 @@
 import { useFormStatus } from "react-dom";
 
-const SignInButton = () => {
+const SignInButton = ({ isSignUpForm }: { isSignUpForm?: boolean }) => {
 	const { pending } = useFormStatus();
 
 	return (
@@ -11,6 +11,8 @@ const SignInButton = () => {
 		>
 			{pending ? (
 				<span className="animate-pulse">Signing in...</span>
+			) : isSignUpForm ? (
+				"Sign up"
 			) : (
 				"Sign in"
 			)}
