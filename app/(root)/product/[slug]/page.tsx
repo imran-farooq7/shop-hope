@@ -116,7 +116,7 @@ const ProductDetailsPage = async ({ params }: Props) => {
 						<div className="mt-10">
 							<AddToCart
 								item={{
-									id: product.description,
+									id: product.id,
 									image: product.image,
 									name: product.name,
 									price: Number(product.price),

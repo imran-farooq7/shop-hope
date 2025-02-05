@@ -1,20 +1,11 @@
 "use client";
 
 import { addItemToCart } from "@/lib/actions/cart.actions";
+import { Item } from "@/lib/types";
 import { useRouter } from "next/navigation";
 import toast, { ToastBar, Toaster } from "react-hot-toast";
 
-interface Props {
-	item: {
-		id: string;
-		name: string;
-		slug: string;
-		price: number;
-		qty: number;
-		image: string;
-	};
-}
-const AddToCart = ({ item }: Props) => {
+const AddToCart = ({ item }: { item: Item }) => {
 	const router = useRouter();
 	const handleAddToCart = async () => {
 		const res = await addItemToCart(item);
