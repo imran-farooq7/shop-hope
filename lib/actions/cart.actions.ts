@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 import { Item } from "../types";
 import { convertPrismaObjectToPlain, roundToTwoDecimalPlaces } from "../utils";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 const priceCalc = (items: Item[]) => {
 	const itemsPrice = roundToTwoDecimalPlaces(
 		items.reduce((acc, item) => acc + item.price * item.qty, 0)
@@ -50,6 +51,34 @@ export const addItemToCart = async (item: Item) => {
 			return {
 				status: "success",
 				message: "Item added to cart successfully",
+			};
+		} else {
+			const existingItem = cart.items.find((i) => i.id === item.id);
+			// console.log(existingItem);
+			if (existingItem) {
+				if (product.stock < existingItem.qty + 1) {
+					throw new Error("Product out of stock");
+				}
+				cart.items.find((i) => i.id === item.id)!.qty = existingItem.qty + 1;
+			} else {
+				if (product.stock < 1) {
+					throw new Error("Product out of stock");
+				}
+			}
+			cart.items.push(item);
+			await prisma.cart.update({
+				where: {
+					id: cart.id,
+				},
+				data: {
+					items: cart.items as Prisma.CartUpdateitemsInput[],
+					...priceCalc(cart.items),
+				},
+			});
+			revalidatePath(`/product/${product.slug}`);
+			return {
+				status: "success",
+				message: `Product ${existingItem ? "updated in" : "added to"} cart`,
 			};
 		}
 	} catch (error) {
