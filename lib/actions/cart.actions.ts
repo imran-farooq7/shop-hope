@@ -1,26 +1,57 @@
 "use server";
 import { auth } from "@/auth";
 import { prisma } from "@/prisma/prisma";
+import { InputJsonValue } from "@prisma/client/runtime/library";
 import { cookies } from "next/headers";
-import { convertPrismaObjectToPlain } from "../utils";
 import { Item } from "../types";
-
+import { convertPrismaObjectToPlain, roundToTwoDecimalPlaces } from "../utils";
+import { revalidatePath } from "next/cache";
+const priceCalc = (items: Item[]) => {
+	const itemsPrice = roundToTwoDecimalPlaces(
+		items.reduce((acc, item) => acc + item.price * item.qty, 0)
+	);
+	const taxPrice = roundToTwoDecimalPlaces(itemsPrice * 0.15);
+	const shippingPrice = roundToTwoDecimalPlaces(itemsPrice > 100 ? 0 : 10);
+	const totalPrice = itemsPrice + taxPrice + shippingPrice;
+	return {
+		itemsPrice: itemsPrice.toFixed(2),
+		taxPrice: taxPrice.toFixed(2),
+		shippingPrice: shippingPrice.toFixed(2),
+		totalPrice: totalPrice.toFixed(2),
+	};
+};
 export const addItemToCart = async (item: Item) => {
 	try {
 		const sessionCartId = (await cookies()).get("sessionCartId")?.value;
 		if (!sessionCartId) throw new Error("Session cart id not found");
 		const session = await auth();
-		const userId = session?.user?.id ? session.user.id : undefined;
+		const userId = session?.user?.id ? session.user.id : null;
+		const cart = await getMyCart();
 		const product = await prisma.product.findFirst({
 			where: {
 				id: item.id,
 			},
 		});
-		console.log(product, "product found");
-		return {
-			status: "success",
-			message: "Item added to cart successfully",
-		};
+		if (!product) throw new Error("Product not found");
+		if (!cart) {
+			const newCart = {
+				items: [item],
+				sessionCartId,
+				userId,
+				...priceCalc([item]),
+			};
+			await prisma.cart.create({
+				data: {
+					...newCart,
+					items: newCart.items as unknown as InputJsonValue[],
+				},
+			});
+			revalidatePath(`/product/${product.id}`);
+			return {
+				status: "success",
+				message: "Item added to cart successfully",
+			};
+		}
 	} catch (error) {
 		console.log(error);
 		return { status: "error", message: "Failed to add item in the cart" };
