@@ -1,11 +1,30 @@
 "use client";
 
-import { addItemToCart } from "@/lib/actions/cart.actions";
+import { addItemToCart, removeItemFromCart } from "@/lib/actions/cart.actions";
 import { Item } from "@/lib/types";
+import { MinusIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import toast, { ToastBar, Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
-const AddToCart = ({ item }: { item: Item }) => {
+const AddToCart = ({
+	item,
+	cart,
+}: {
+	item: Item;
+	cart:
+		| {
+				items: Item[];
+				itemsPrice: string;
+				totalPrice: string;
+				taxPrice: string;
+				shippingPrice: string;
+				id: string;
+				createdAt: Date;
+				userId: string | null;
+				sessionCartId: string;
+		  }
+		| undefined;
+}) => {
 	const router = useRouter();
 	const handleAddToCart = async () => {
 		const res = await addItemToCart(item);
@@ -28,6 +47,34 @@ const AddToCart = ({ item }: { item: Item }) => {
 			toast.error(res.message);
 		}
 	};
+	const existingItem = cart && cart.items.find((i) => i.id === item.id);
+	const handleRemoveFromCart = async () => {
+		const res = await removeItemFromCart(item.id);
+		if (res.status === "success") {
+			toast.success(res.message);
+		} else {
+			toast.error(res.message);
+		}
+	};
+	if (existingItem) {
+		return (
+			<div className="flex items-center">
+				<button
+					className="flex items-center justify-center rounded-md border border-transparent bg-red-600 px-8 py-3 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+					onClick={handleRemoveFromCart}
+				>
+					<MinusIcon />
+				</button>
+				<span className="px-8 font-bold">{existingItem.qty}</span>
+				<button
+					className="flex items-center justify-center rounded-md border border-transparent bg-green-600 px-8 py-3 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-50"
+					onClick={handleAddToCart}
+				>
+					<PlusIcon />
+				</button>
+			</div>
+		);
+	}
 	return (
 		<button
 			className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"

@@ -1,4 +1,5 @@
 import AddToCart from "@/components/add-to-cart/add-to-cart";
+import { getMyCart } from "@/lib/actions/cart.actions";
 import { getProductBySlug } from "@/lib/actions/product.actions";
 import {
 	CheckIcon,
@@ -18,6 +19,7 @@ function classNames(...classes: string[]) {
 const ProductDetailsPage = async ({ params }: Props) => {
 	const { slug } = await params;
 	const { data: product } = await getProductBySlug(slug);
+	const cart = await getMyCart();
 	if (!product) notFound();
 	return (
 		<div>
@@ -115,6 +117,7 @@ const ProductDetailsPage = async ({ params }: Props) => {
 					<section aria-labelledby="options-heading">
 						<div className="mt-10">
 							<AddToCart
+								cart={cart}
 								item={{
 									id: product.id,
 									image: product.image,
