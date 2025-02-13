@@ -64,8 +64,8 @@ export const addItemToCart = async (item: Item) => {
 				if (product.stock < 1) {
 					throw new Error("Product out of stock");
 				}
+				cart.items.push(item);
 			}
-			cart.items.push(item);
 			await prisma.cart.update({
 				where: {
 					id: cart.id,
