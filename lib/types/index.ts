@@ -6,3 +6,12 @@ export interface Item {
 	qty: number;
 	image: string;
 }
+export interface Address {
+	fullName: string;
+	streetAddress: string;
+	city: string;
+	postalCode: string;
+	country: string;
+	lat?: number;
+	lng?: number;
+}
