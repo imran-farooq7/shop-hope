@@ -1,8 +1,9 @@
 "use server";
-import { signIn, signOut } from "@/auth";
+import { auth, signIn, signOut } from "@/auth";
 import { prisma } from "@/prisma/prisma";
 import { hashSync } from "bcryptjs";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { Address } from "../types";
 export const signInCredentials = async (
 	prevState: unknown,
 	formData: FormData
@@ -79,4 +80,30 @@ export const getUserById = async (id: string) => {
 	});
 	if (!user) throw new Error("User not found");
 	return user;
+};
+export const updateUserAddress = async (data: Address) => {
+	try {
+		const session = await auth();
+		const user = await prisma.user.findFirst({
+			where: {
+				id: session?.user?.id,
+			},
+		});
+		if (!user) throw new Error("User not found");
+		await prisma.user.update({
+			where: {
+				id: user.id,
+			},
+			data: {
+				address: JSON.parse(JSON.stringify(data)),
+			},
+		});
+		return {
+			status: "success",
+			message: "user address updated successfully",
+		};
+	} catch (error) {
+		console.log(error);
+		return { status: "error", message: "failed to update user address" };
+	}
 };

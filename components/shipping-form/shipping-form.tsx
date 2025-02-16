@@ -1,8 +1,10 @@
 "use client";
+import { updateUserAddress } from "@/lib/actions/user.actions";
 import { Address } from "@/lib/types";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { FormEvent, useTransition } from "react";
+import toast from "react-hot-toast";
 
 const ShippingForm = ({ address }: { address: Address }) => {
 	const router = useRouter();
@@ -11,7 +13,15 @@ const ShippingForm = ({ address }: { address: Address }) => {
 		event.preventDefault();
 		const formData = new FormData(event.currentTarget);
 		const formValues = Object.fromEntries(formData.entries());
-		console.log(formValues);
+		startTransition(async () => {
+			const res = await updateUserAddress(formValues as unknown as Address);
+			if (res.status === "success") {
+				toast.success(res.message);
+				router.push("/payment-method");
+			} else {
+				toast.error(res.message);
+			}
+		});
 	};
 	return (
 		<div className="flex min-h-full flex-1 flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
