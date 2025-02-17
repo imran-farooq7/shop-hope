@@ -33,9 +33,15 @@ const CartTable = ({
 			<h1 className="text-center text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
 				Shopping Cart
 			</h1>
-			{cart?.items.length === 0 ? (
-				<div>
-					Cart is empty. <Link href={"/"}>Go to shopping</Link>
+			{cart?.items.length === 0 || !cart ? (
+				<div className="text-center mt-10">
+					Cart is empty.{" "}
+					<Link
+						className="font-medium text-indigo-600 hover:text-indigo-500"
+						href={"/"}
+					>
+						Go to shopping
+					</Link>
 				</div>
 			) : (
 				<form className="mt-12">
