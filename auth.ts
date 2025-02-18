@@ -106,6 +106,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			return token;
 		},
 		authorized({ request, auth }) {
+			const protectedPaths = [
+				/\/shipping-address/,
+				/\/payment-method/,
+				/\/place-order/,
+				/\/profile/,
+				/\/user\/(.*)/,
+				/\/order\/(.*)/,
+				/\/admin/,
+			];
+			if (!auth && protectedPaths.some((p) => p.test(request.nextUrl.pathname)))
+				return false;
 			if (!request.cookies.get("sessionCartId")) {
 				const sessionCartId = crypto.randomUUID();
 				const newRequestHeaders = new Headers(request.headers);
