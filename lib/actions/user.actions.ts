@@ -107,3 +107,29 @@ export const updateUserAddress = async (data: Address) => {
 		return { status: "error", message: "failed to update user address" };
 	}
 };
+export const updateUserPaymentMethod = async (data: string) => {
+	try {
+		const session = await auth();
+		const user = await prisma.user.findFirst({
+			where: {
+				id: session?.user?.id,
+			},
+		});
+		if (!user) throw new Error("User not found");
+		await prisma.user.update({
+			where: {
+				id: user.id,
+			},
+			data: {
+				paymentMethod: data,
+			},
+		});
+		return {
+			status: "success",
+			message: "payment method updated successfully",
+		};
+	} catch (error) {
+		console.log(error);
+		return { status: "error", message: "failed to update payment method" };
+	}
+};
