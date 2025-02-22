@@ -40,7 +40,7 @@ const AddToCart = ({
 					</button>
 				</div>,
 				{
-					removeDelay: 3000,
+					removeDelay: 2000,
 				}
 			);
 		} else {
