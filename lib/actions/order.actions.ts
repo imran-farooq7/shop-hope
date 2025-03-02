@@ -1,0 +1,87 @@
+"use server";
+
+import { auth } from "@/auth";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { getMyCart } from "./cart.actions";
+import { getUserById } from "./user.actions";
+import { prisma } from "@/prisma/prisma";
+
+export const createOrder = async () => {
+	try {
+		const session = await auth();
+		if (!session) throw new Error("User not authenticated");
+		const cart = await getMyCart();
+		const userId = await session.user?.id;
+		if (!userId) throw new Error("User not found");
+		const user = await getUserById(userId);
+		if (!cart || cart.items.length === 0) {
+			return {
+				status: "error",
+				message: "cart is empty",
+				redirectTo: "/cart",
+			};
+		}
+		if (!user.address) {
+			return {
+				status: "error",
+				message: "no shipping address",
+				redirectTo: "/shipping-address",
+			};
+		}
+		if (!user.paymentMethod) {
+			return {
+				status: "error",
+				message: "no payment method",
+				redirectTo: "/payment-method",
+			};
+		}
+		const order = {
+			userId,
+			itemsPrice: cart.itemsPrice,
+			shippingAddress: user.address,
+			paymentMethod: user.paymentMethod,
+			shippingPrice: cart.shippingPrice,
+			taxPrice: cart.taxPrice,
+			totalPrice: cart.totalPrice,
+		};
+		const orderId = await prisma.$transaction(async (tx) => {
+			const newOrder = await tx.order.create({
+				data: order,
+			});
+			for (const item of cart.items) {
+				await tx.orderItem.create({
+					data: {
+						...item,
+						price: item.price,
+						orderId: newOrder.id,
+					},
+				});
+			}
+			await tx.cart.update({
+				where: {
+					id: cart.id,
+				},
+				data: {
+					items: [],
+					taxPrice: 0,
+					shippingPrice: 0,
+					totalPrice: 0,
+					itemsPrice: 0,
+				},
+			});
+			return newOrder.id;
+		});
+		if (!orderId) throw new Error("order not created");
+		return {
+			status: "success",
+			message: "Order created",
+			redirectTo: `/order/${orderId}`,
+		};
+	} catch (error) {
+		if (isRedirectError(error)) throw error;
+		return {
+			status: "error",
+			message: "failed to place order",
+		};
+	}
+};
