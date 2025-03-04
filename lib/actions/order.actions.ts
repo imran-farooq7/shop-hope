@@ -51,9 +51,13 @@ export const createOrder = async () => {
 			for (const item of cart.items) {
 				await tx.orderItem.create({
 					data: {
-						...item,
+						name: item.name,
+						productId: item.id,
 						price: item.price,
 						orderId: newOrder.id,
+						image: item.image,
+						qty: item.qty,
+						slug: item.slug,
 					},
 				});
 			}
@@ -78,6 +82,7 @@ export const createOrder = async () => {
 			redirectTo: `/order/${orderId}`,
 		};
 	} catch (error) {
+		console.log(error);
 		if (isRedirectError(error)) throw error;
 		return {
 			status: "error",

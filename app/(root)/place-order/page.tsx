@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import OrderForm from "@/components/order-form/order-form";
 import PlaceOrderForm from "@/components/place-order-form/place-order-form";
 import { getMyCart } from "@/lib/actions/cart.actions";
 import { getUserById } from "@/lib/actions/user.actions";
@@ -114,17 +115,7 @@ const PlaceOrderPage = async () => {
 						</dl>
 
 						<div className="mt-16 border-gray-200 py-6 text-right">
-							<button
-								type="submit"
-								// disabled={isPending}
-								className="flex justify-center rounded-md bg-emerald-500 px-10 ml-auto py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-							>
-								{false ? (
-									<Loader className="animate-spin w-5 h-5" />
-								) : (
-									"Continue"
-								)}
-							</button>
+							<OrderForm />
 						</div>
 					</div>
 				</div>
