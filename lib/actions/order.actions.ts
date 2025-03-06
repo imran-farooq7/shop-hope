@@ -5,6 +5,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { getMyCart } from "./cart.actions";
 import { getUserById } from "./user.actions";
 import { prisma } from "@/prisma/prisma";
+import { convertPrismaObjectToPlain } from "../utils";
 
 export const createOrder = async () => {
 	try {
@@ -89,4 +90,21 @@ export const createOrder = async () => {
 			message: "failed to place order",
 		};
 	}
+};
+export const getOrderById = async (id: string) => {
+	const order = await prisma.order.findFirst({
+		where: {
+			id,
+		},
+		include: {
+			OrderItem: true,
+			user: {
+				select: {
+					name: true,
+					email: true,
+				},
+			},
+		},
+	});
+	return convertPrismaObjectToPlain(order);
 };
