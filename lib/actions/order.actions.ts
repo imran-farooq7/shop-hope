@@ -108,3 +108,18 @@ export const getOrderById = async (id: string) => {
 	});
 	return convertPrismaObjectToPlain(order);
 };
+export const getMyOrders = async () => {
+	const session = await auth();
+	if (!session) throw new Error("User not authenticated");
+	const orders = await prisma.order.findMany({
+		where: {
+			userId: session.user?.id,
+		},
+		orderBy: {
+			createdAt: "asc",
+		},
+	});
+	return {
+		data: orders,
+	};
+};
