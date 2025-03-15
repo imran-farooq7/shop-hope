@@ -13,10 +13,12 @@ const Header = ({ user }: { user: User }) => {
 					<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 						<div className="flex h-16 justify-between">
 							<div className="flex">
-								<div className="flex flex-shrink-0 items-center">
+								<div className="flex gap-4 flex-shrink-0 items-center">
 									<Link href={"/"} className="text-2xl font-bold">
 										Hope Shop
 									</Link>
+									<Link href={"/user/orders"}>Orders</Link>
+									<Link href={"/user/profile"}>Profile</Link>
 								</div>
 							</div>
 							<div className="sm:ml-6 flex gap-4 sm:gap-8 items-center">

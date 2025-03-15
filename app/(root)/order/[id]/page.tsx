@@ -1,3 +1,4 @@
+import OrderTable from "@/components/order-table/order-table";
 import { getOrderById } from "@/lib/actions/order.actions";
 import { notFound } from "next/navigation";
 
@@ -10,7 +11,7 @@ const OrderPage = async ({ params }: Props) => {
 	const { id } = await params;
 	const order = await getOrderById(id);
 	if (!order) notFound();
-	return <div>{order.totalPrice.toString()}</div>;
+	return <OrderTable order={order} orderItem={order.OrderItem} />;
 };
 
 export default OrderPage;

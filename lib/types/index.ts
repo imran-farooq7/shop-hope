@@ -8,7 +8,7 @@ export interface Item {
 }
 export interface Address {
 	fullName: string;
-	streetAddress: string;
+	address: string;
 	city: string;
 	postalCode: string;
 	country: string;
