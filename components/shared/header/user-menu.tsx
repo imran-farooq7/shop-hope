@@ -1,6 +1,7 @@
 import { userSignOut } from "@/lib/actions/user.actions";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { User } from "next-auth";
+import Link from "next/link";
 
 const UserMenu = ({ user }: { user: User }) => {
 	return (
@@ -17,30 +18,21 @@ const UserMenu = ({ user }: { user: User }) => {
 			>
 				<div className="py-1">
 					<MenuItem>
-						<a
-							href="#"
+						<Link
+							href="/user/orders"
 							className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
 						>
-							Account settings
-						</a>
+							Orders History
+						</Link>
 					</MenuItem>
 					<MenuItem>
-						<a
-							href="#"
+						<Link
+							href="/user/profile"
 							className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
 						>
-							Support
-						</a>
+							Profile
+						</Link>
 					</MenuItem>
-					<MenuItem>
-						<a
-							href="#"
-							className="block px-4 py-2 text-sm text-gray-700 data-[focus]:bg-gray-100 data-[focus]:text-gray-900 data-[focus]:outline-none"
-						>
-							License
-						</a>
-					</MenuItem>
-
 					<MenuItem>
 						<button
 							onClick={userSignOut}
