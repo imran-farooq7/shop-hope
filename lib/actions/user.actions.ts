@@ -133,3 +133,27 @@ export const updateUserPaymentMethod = async (data: string) => {
 		return { status: "error", message: "failed to update payment method" };
 	}
 };
+export const updateUserProfile = async (user: {
+	name: string;
+	email: string;
+}) => {
+	try {
+		const session = await auth();
+		if (!session?.user) throw new Error("user not authenticated");
+		await prisma.user.update({
+			where: {
+				id: session.user.id,
+			},
+			data: {
+				name: user.name,
+			},
+		});
+		return { status: "success", message: "user profile updated successfully" };
+	} catch (error) {
+		console.log(error);
+		return {
+			status: "error",
+			message: "failed to update user profile",
+		};
+	}
+};
