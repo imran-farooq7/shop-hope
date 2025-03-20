@@ -61,7 +61,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 			}
 			return session;
 		},
-		async jwt({ token, user, trigger }) {
+		async jwt({ token, user, trigger, session }) {
 			if (user) {
 				token.id = user.id;
 				token.role = user.role;
@@ -102,6 +102,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 						}
 					}
 				}
+			}
+			if (session?.user.name && trigger === "update") {
+				token.name = session.user.name;
 			}
 			return token;
 		},

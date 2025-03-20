@@ -1,15 +1,34 @@
 "use client";
 
+import { updateUserProfile } from "@/lib/actions/user.actions";
 import { Loader, Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useState, useTransition } from "react";
+import { FormEvent, useState, useTransition } from "react";
+import toast from "react-hot-toast";
 
 const ProfileForm = () => {
 	const { data: session, update } = useSession();
-	const [email, setEmail] = useState(session?.user?.email);
 	const [userName, setUserName] = useState(session?.user?.name);
 	const [isPending, startTransition] = useTransition();
-	const handleSubmit = () => {};
+	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		startTransition(async () => {
+			const res = await updateUserProfile({
+				email: session?.user?.email!,
+				name: userName!,
+			});
+			const newSession = {
+				...session,
+				user: { ...session?.user, name: userName },
+			};
+			await update(newSession);
+			if (res.status === "success") {
+				toast.success(res.message);
+			} else {
+				toast.error(res.message);
+			}
+		});
+	};
 
 	return (
 		<div className="flex min-h-full flex-1 flex-col justify-center items-center py-12 sm:px-6 lg:px-8">
@@ -21,7 +40,7 @@ const ProfileForm = () => {
 
 			<div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]">
 				<div className="bg-white px-6 py-12 shadow sm:rounded-lg sm:px-12">
-					<form className="space-y-6">
+					<form className="space-y-6" onSubmit={handleSubmit}>
 						<div>
 							<label
 								htmlFor="email"
@@ -34,7 +53,7 @@ const ProfileForm = () => {
 									id="email"
 									name="email"
 									type="email"
-									defaultValue={email!}
+									defaultValue={session?.user?.email!}
 									required
 									className="block w-full pl-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
 								/>
