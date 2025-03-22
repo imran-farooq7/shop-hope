@@ -6,6 +6,7 @@ import { getMyCart } from "./cart.actions";
 import { getUserById } from "./user.actions";
 import { prisma } from "@/prisma/prisma";
 import { convertPrismaObjectToPlain } from "../utils";
+import { Prisma } from "@prisma/client";
 
 export const createOrder = async () => {
 	try {
@@ -121,5 +122,37 @@ export const getMyOrders = async () => {
 	});
 	return {
 		data: orders,
+	};
+};
+export const getOrdersSummary = async () => {
+	const ordersCount = await prisma.order.count();
+	const productsCount = await prisma.product.count();
+	const usersCount = await prisma.user.count();
+	const totalSales = await prisma.order.aggregate({
+		_sum: { totalPrice: true },
+	});
+	const salesDataDecimal = await prisma.$queryRaw<
+		Array<{ month: string; totalSales: Prisma.Decimal }>
+	>`SELECT to_char("createdAt","MM/YY") as "month" , sum("totalPrice") as "totalSales" FROM "Order" GROUP BY to_char("createdAt","MM/YY")`;
+	const salesData = salesDataDecimal.map((sale) => ({
+		month: sale.month,
+		totalSales: Number(sale.totalSales),
+	}));
+	const latestSales = await prisma.order.findMany({
+		orderBy: {
+			createdAt: "desc",
+		},
+		include: {
+			user: { select: { name: true } },
+		},
+		take: 6,
+	});
+	return {
+		ordersCount,
+		productsCount,
+		usersCount,
+		salesData,
+		latestSales,
+		totalSales,
 	};
 };
