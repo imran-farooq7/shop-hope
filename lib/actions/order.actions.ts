@@ -156,3 +156,16 @@ export const getOrdersSummary = async () => {
 		totalSales,
 	};
 };
+export const getAllOrders = async () => {
+	const orders = await prisma.order.findMany({
+		orderBy: {
+			createdAt: "desc",
+		},
+		include: {
+			user: { select: { name: true } },
+		},
+	});
+	return {
+		orders,
+	};
+};
