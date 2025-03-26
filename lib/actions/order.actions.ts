@@ -187,3 +187,94 @@ export const deleteOrder = async (id: string) => {
 		return { status: "error", message: "failed to delete order" };
 	}
 };
+export const updateOrderToPaid = async (id: string) => {
+	// Find the order in the database and include the order items
+	const order = await prisma.order.findFirst({
+		where: {
+			id: id,
+		},
+		include: {
+			OrderItem: true,
+		},
+	});
+
+	if (!order) throw new Error("Order not found");
+
+	if (order.isPaid) throw new Error("Order is already paid");
+
+	// Transaction to update the order and update the product quantities
+	await prisma.$transaction(async (tx) => {
+		// Update all item quantities in the database
+		for (const item of order.OrderItem) {
+			await tx.product.update({
+				where: { id: item.productId },
+				data: { stock: { increment: -item.qty } },
+			});
+		}
+
+		// Set the order to paid
+		await tx.order.update({
+			where: { id: id },
+			data: {
+				isPaid: true,
+				paidAt: new Date(),
+			},
+		});
+	});
+
+	// Get the updated order after the transaction
+	const updatedOrder = await prisma.order.findFirst({
+		where: {
+			id: id,
+		},
+		include: {
+			OrderItem: true,
+			user: { select: { name: true, email: true } },
+		},
+	});
+
+	if (!updatedOrder) {
+		throw new Error("Order not found");
+	}
+};
+export const updateOrderToPaidCod = async (id: string) => {
+	try {
+		await updateOrderToPaid(id);
+		revalidatePath(`order/${id}`);
+		return {
+			status: "success",
+			message: "Order updated to paid successfully",
+		};
+	} catch (error) {
+		console.log(error);
+		return { status: "error", message: "failed to update order to paid" };
+	}
+};
+export const deliverOrder = async (id: string) => {
+	try {
+		const order = await prisma.order.findFirst({
+			where: {
+				id,
+			},
+		});
+		if (!order) throw new Error("Order not found");
+		if (!order.isPaid) throw new Error("Order is not paid");
+		await prisma.order.update({
+			where: {
+				id,
+			},
+			data: {
+				isDelivered: true,
+				deliveredAt: new Date(),
+			},
+		});
+		revalidatePath(`order/${id}`);
+		return {
+			status: "success",
+			message: "Order marked delivered successfully",
+		};
+	} catch (error) {
+		console.log(error);
+		return { status: "error", message: "failed to deliver order" };
+	}
+};
