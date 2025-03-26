@@ -1,5 +1,7 @@
 import { auth } from "@/auth";
-import { getAllOrders } from "@/lib/actions/order.actions";
+import DeleteButton from "@/components/shared/delete-button/delete-button";
+import Modal from "@/components/shared/modal/Modal";
+import { deleteOrder, getAllOrders } from "@/lib/actions/order.actions";
 import Link from "next/link";
 
 const OrdersPage = async () => {
@@ -75,7 +77,9 @@ const OrdersPage = async () => {
 												? order.deliveredAt?.toLocaleDateString()
 												: "Not Delivered"}
 										</td>
-										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500"></td>
+										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+											<DeleteButton action={deleteOrder} id={order.id} />
+										</td>
 									</tr>
 								))}
 							</tbody>

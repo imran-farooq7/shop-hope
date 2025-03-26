@@ -7,6 +7,7 @@ import { getUserById } from "./user.actions";
 import { prisma } from "@/prisma/prisma";
 import { convertPrismaObjectToPlain } from "../utils";
 import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 export const createOrder = async () => {
 	try {
@@ -168,4 +169,21 @@ export const getAllOrders = async () => {
 	return {
 		orders,
 	};
+};
+export const deleteOrder = async (id: string) => {
+	try {
+		await prisma.order.delete({
+			where: {
+				id,
+			},
+		});
+		revalidatePath("/admin/orders");
+		return {
+			status: "success",
+			message: "Order deleted successfully",
+		};
+	} catch (error) {
+		console.log(error);
+		return { status: "error", message: "failed to delete order" };
+	}
 };

@@ -96,7 +96,7 @@ model Cart {
 model Order {
   id              String      @id @default(cuid())
   userId          String      @db.Text
-  user            User        @relation(fields: [userId], references: [id])
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "order_userId_user_id_fk")
   shippingAddress Json        @db.Json
   paymentMethod   String
   paymentResult   Json?       @db.Json
@@ -120,7 +120,7 @@ model OrderItem {
   name      String
   slug      String
   image     String
-  order     Order   @relation(fields: [orderId], references: [id])
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "orderItem_orderId_order_id_fk")
   product   Product @relation(fields: [productId], references: [id])
 
   @@id([orderId, productId], map: "order_item_order_id_product_id_idx")
