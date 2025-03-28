@@ -49,7 +49,7 @@ const PaymentMethodForm = ({ paymentMethod }: { paymentMethod: string }) => {
 							>
 								<option value={"paypal"}>Paypal</option>
 								<option value={"stripe"}>Stripe</option>
-								<option value={"coNd"}>COD</option>
+								<option value={"cod"}>COD</option>
 							</select>
 						</div>
 						<div>

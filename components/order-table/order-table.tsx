@@ -1,17 +1,29 @@
 "use client";
 
+import {
+	deliverOrder,
+	updateOrderToPaid,
+	updateOrderToPaidCod,
+} from "@/lib/actions/order.actions";
 import { Address } from "@/lib/types";
+import { formatDateToYYMMDD } from "@/lib/utils";
 import { Order, OrderItem } from "@prisma/client";
+import { LoaderIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useTransition } from "react";
+import toast from "react-hot-toast";
 
 const OrderTable = ({
 	order,
 	orderItem,
+	isAdmin,
 }: {
 	order: Order;
 	orderItem: OrderItem[];
+	isAdmin: boolean;
 }) => {
+	const [isPending, startTransition] = useTransition();
 	const {
 		shippingAddress,
 		itemsPrice,
@@ -23,9 +35,30 @@ const OrderTable = ({
 		isDelivered,
 		paidAt,
 		shippingPrice,
+		id,
 	} = order;
 	const { fullName, address, city, country, postalCode } =
 		shippingAddress as unknown as Address;
+	const handleDelivered = async () => {
+		startTransition(async () => {
+			const res = await deliverOrder(id);
+			if (res.status === "success") {
+				toast.success(res.message);
+			} else {
+				toast.error(res.message);
+			}
+		});
+	};
+	const handlePaid = async () => {
+		startTransition(async () => {
+			const res = await updateOrderToPaidCod(id);
+			if (res.status === "success") {
+				toast.success(res.message);
+			} else {
+				toast.error(res.message);
+			}
+		});
+	};
 	return (
 		<div className="mx-auto grid grid-cols-3 max-w-2xl px-4 py-8 sm:px-6 sm:py-12  lg:max-w-7xl lg:gap-x-8 lg:px-8 lg:py-16 xl:gap-x-24">
 			<div className="col-span-2">
@@ -38,7 +71,7 @@ const OrderTable = ({
 						<p className="capitalize">{paymentMethod}</p>
 						{isPaid ? (
 							<span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
-								Paid at {paidAt?.toLocaleDateString()}
+								Paid at {formatDateToYYMMDD(paidAt?.toLocaleString() as string)}
 							</span>
 						) : (
 							<span className="inline-flex items-center rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
@@ -58,7 +91,8 @@ const OrderTable = ({
 						</p>
 						{isDelivered ? (
 							<span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
-								Delivered at {deliveredAt?.toLocaleDateString()}
+								Delivered at{" "}
+								{formatDateToYYMMDD(deliveredAt?.toLocaleString() as string)}
 							</span>
 						) : (
 							<span className="inline-flex items-center rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
@@ -177,6 +211,32 @@ const OrderTable = ({
 				{/* <div className="mt-16 border-gray-200 py-6 text-right">
 							<OrderForm />
 						</div> */}
+				{isAdmin && !isPaid && paymentMethod === "cod" && (
+					<button
+						onClick={handlePaid}
+						disabled={isPending}
+						className="flex w-full justify-center rounded-md bg-emerald-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 mt-8"
+					>
+						{isPending ? (
+							<LoaderIcon className="animate-spin w-5 h-5" />
+						) : (
+							"Mark as Paid"
+						)}
+					</button>
+				)}
+				{isAdmin && isPaid && !isDelivered && (
+					<button
+						onClick={handleDelivered}
+						disabled={isPending}
+						className="flex w-full justify-center rounded-md bg-emerald-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 mt-8"
+					>
+						{isPending ? (
+							<LoaderIcon className="animate-spin w-5 h-5" />
+						) : (
+							"Mark as Delivered"
+						)}
+					</button>
+				)}
 			</div>
 		</div>
 	);
