@@ -39,3 +39,11 @@ export const getProductBySlug = async (slug: string) => {
 		};
 	}
 };
+export const getAllProducts = async () => {
+	const products = await prisma.product.findMany();
+	const productsCount = await prisma.product.count();
+	return {
+		products,
+		productsCount,
+	};
+};
