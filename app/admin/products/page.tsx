@@ -1,3 +1,5 @@
+import DeleteButton from "@/components/shared/delete-button/delete-button";
+import { deleteOrder } from "@/lib/actions/order.actions";
 import { getAllProducts } from "@/lib/actions/product.actions";
 import Link from "next/link";
 
@@ -86,7 +88,7 @@ const ProductsPages = async () => {
 											{Number(product.rating)}
 										</td>
 										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-											{/* <DeleteButton action={deleteOrder} id={order.id} /> */}
+											<DeleteButton action={deleteOrder} id={product.id} />
 										</td>
 									</tr>
 								))}

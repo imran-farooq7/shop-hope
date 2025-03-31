@@ -172,7 +172,7 @@ export const getAllOrders = async () => {
 };
 export const deleteOrder = async (id: string) => {
 	try {
-		await prisma.order.delete({
+		await prisma.product.delete({
 			where: {
 				id,
 			},

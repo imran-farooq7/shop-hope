@@ -2,6 +2,7 @@
 
 import { prisma } from "@/prisma/prisma";
 import { convertPrismaObjectToPlain } from "../utils";
+import { revalidatePath } from "next/cache";
 
 export const getProducts = async () => {
 	try {
@@ -46,4 +47,24 @@ export const getAllProducts = async () => {
 		products,
 		productsCount,
 	};
+};
+export const deleteProduct = async (id: string) => {
+	try {
+		await prisma.product.delete({
+			where: {
+				id,
+			},
+		});
+		revalidatePath("/admin/products");
+		return {
+			status: "success",
+			message: "product deleted successfully",
+		};
+	} catch (error) {
+		console.log(error);
+		return {
+			status: "error",
+			message: "failed to delete product",
+		};
+	}
 };
