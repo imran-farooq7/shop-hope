@@ -3,6 +3,7 @@
 import { prisma } from "@/prisma/prisma";
 import { convertPrismaObjectToPlain } from "../utils";
 import { revalidatePath } from "next/cache";
+import { Product } from "../types";
 
 export const getProducts = async () => {
 	try {
@@ -65,6 +66,21 @@ export const deleteProduct = async (id: string) => {
 		return {
 			status: "error",
 			message: "failed to delete product",
+		};
+	}
+};
+export const createProduct = async (product: Product) => {
+	try {
+		await prisma.product.create({
+			data: product,
+		});
+		revalidatePath("/admin/products");
+		return { status: "success", message: "product created successfully" };
+	} catch (error) {
+		console.log(error);
+		return {
+			status: "error",
+			message: "failed to create product",
 		};
 	}
 };
