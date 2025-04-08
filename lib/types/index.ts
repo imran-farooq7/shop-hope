@@ -23,7 +23,7 @@ export interface Product {
 	image: string;
 	price: number;
 	brand: string;
-	rating: number;
-	reviews: number;
+	// rating: number;
+	// reviews: number;
 	stock: number;
 }
