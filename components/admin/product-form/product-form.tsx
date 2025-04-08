@@ -8,8 +8,38 @@ import { FormEvent, useTransition } from "react";
 import toast from "react-hot-toast";
 
 const ProductForm = () => {
+	const [isPending, startTransition] = useTransition();
+	const router = useRouter();
+	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const formData = new FormData(e.target as HTMLFormElement);
+		const product = Object.fromEntries(formData.entries());
+
+		// Ensure the product matches the Product type
+		const validatedProduct = {
+			name: product.name as string,
+			slug: product.slug as string,
+			category: product.category as string,
+			brand: product.brand as string,
+			price: parseFloat(product.price as string),
+			stock: parseInt(product.stock as string, 10),
+			image: "/images/products/",
+			description: product.description as string,
+		};
+
+		startTransition(async () => {
+			const res = await createProduct(validatedProduct);
+
+			if (res.status === "success") {
+				toast.success(res.message);
+				router.push("/admin/products");
+			} else {
+				toast.error(res.message);
+			}
+		});
+	};
 	return (
-		<form className="space-y-5 mt-5">
+		<form onSubmit={handleSubmit} className="space-y-5 mt-5">
 			<div className="flex flex-col md:flex-row gap-5">
 				<div className="w-full">
 					<label htmlFor="name">Name</label>
@@ -127,7 +157,11 @@ const ProductForm = () => {
 			</div>
 			<div>
 				<button className="flex justify-center rounded-md bg-emerald-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2">
-					Create Product
+					{isPending ? (
+						<Loader className="w-5 h-5 animate-spin" />
+					) : (
+						"Create Product"
+					)}
 				</button>
 			</div>
 		</form>
