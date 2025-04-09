@@ -1,5 +1,4 @@
 "use client";
-
 import { createProduct } from "@/lib/actions/product.actions";
 import { PhotoIcon } from "@heroicons/react/20/solid";
 import { Loader } from "lucide-react";
