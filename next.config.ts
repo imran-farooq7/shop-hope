@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
 		remotePatterns: [
 			{
 				protocol: "https",
-				hostname: "uploadthing.com",
+				hostname: "dqcikbw5lf.ufs.sh",
 				port: "",
 			},
 		],

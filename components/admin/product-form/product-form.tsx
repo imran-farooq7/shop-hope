@@ -1,13 +1,15 @@
 "use client";
 import { createProduct } from "@/lib/actions/product.actions";
+import { UploadButton } from "@/lib/uploadthing";
 import { PhotoIcon } from "@heroicons/react/20/solid";
 import { Loader } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { FormEvent, useTransition } from "react";
+import { FormEvent, useState, useTransition } from "react";
 import toast from "react-hot-toast";
 
 const ProductForm = () => {
 	const [isPending, startTransition] = useTransition();
+	const [imgUrl, setImgUrl] = useState<string>("");
 	const router = useRouter();
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -22,7 +24,7 @@ const ProductForm = () => {
 			brand: product.brand as string,
 			price: parseFloat(product.price as string),
 			stock: parseInt(product.stock as string, 10),
-			image: "/images/products/",
+			image: imgUrl,
 			description: product.description as string,
 		};
 
@@ -105,7 +107,7 @@ const ProductForm = () => {
 					/>
 				</div>
 			</div>
-			<div className="flex flex-col">
+			<div>
 				<label
 					htmlFor="image"
 					className="block text-sm/6 font-medium text-gray-900"
@@ -114,7 +116,15 @@ const ProductForm = () => {
 				</label>
 				<div className="mt-2 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10">
 					<div className="text-center">
-						<PhotoIcon
+						<UploadButton
+							endpoint={"imageUploader"}
+							onClientUploadComplete={(res) => {
+								setImgUrl(res[0].ufsUrl);
+							}}
+							className="ut-button:bg-indigo-600 ut-button:text-white ut-button:rounded-md ut-button:px-3 ut-button:py-1.5 ut-button:text-sm ut-button:font-semibold ut-button:leading-6 ut-button:shadow-sm ut-button:hover:bg-indigo-700 ut-button:focus-visible:outline ut-button:focus-visible:outline-2 ut-button:focus-visible:outline-offset-2"
+						/>
+
+						{/* <PhotoIcon
 							aria-hidden="true"
 							className="mx-auto size-12 text-gray-300"
 						/>
@@ -133,7 +143,7 @@ const ProductForm = () => {
 							</label>
 							<p className="pl-1">or drag and drop</p>
 						</div>
-						<p className="text-xs/5 text-gray-600">PNG, JPG, GIF up to 10MB</p>
+						<p className="text-xs/5 text-gray-600">PNG, JPG, GIF up to 10MB</p> */}
 					</div>
 				</div>
 			</div>
