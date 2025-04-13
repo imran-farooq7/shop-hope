@@ -1,6 +1,6 @@
 import DeleteButton from "@/components/shared/delete-button/delete-button";
 import { deleteOrder } from "@/lib/actions/order.actions";
-import { getAllUsers } from "@/lib/actions/user.actions";
+import { deleteUser, getAllUsers } from "@/lib/actions/user.actions";
 
 const UsersPage = async () => {
 	const { users } = await getAllUsers();
@@ -63,7 +63,7 @@ const UsersPage = async () => {
 										</td>
 
 										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-											<DeleteButton action={deleteOrder} id={user.id} />
+											<DeleteButton action={deleteUser} id={user.id} />
 										</td>
 									</tr>
 								))}

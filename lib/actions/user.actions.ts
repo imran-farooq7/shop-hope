@@ -4,6 +4,7 @@ import { prisma } from "@/prisma/prisma";
 import { hashSync } from "bcryptjs";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { Address } from "../types";
+import { revalidatePath } from "next/cache";
 export const signInCredentials = async (
 	prevState: unknown,
 	formData: FormData
@@ -166,4 +167,24 @@ export const getAllUsers = async () => {
 	return {
 		users,
 	};
+};
+export const deleteUser = async (id: string) => {
+	try {
+		await prisma.user.delete({
+			where: {
+				id,
+			},
+		});
+		revalidatePath("/admin/users");
+		return {
+			status: "success",
+			message: "user deleted successfully",
+		};
+	} catch (error) {
+		console.log(error);
+		return {
+			status: "error",
+			message: "failed to delete user",
+		};
+	}
 };
