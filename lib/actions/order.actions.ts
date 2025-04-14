@@ -165,8 +165,8 @@ export const getAllOrders = async ({ query }: { query: string }) => {
 						name: {
 							contains: query,
 							mode: "insensitive",
-						},
-					} as Prisma.StringFilter,
+						} as Prisma.StringFilter,
+					},
 			  }
 			: {};
 	const orders = await prisma.order.findMany({

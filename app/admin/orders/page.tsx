@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import DeleteButton from "@/components/shared/delete-button/delete-button";
-import Modal from "@/components/shared/modal/Modal";
 import { deleteOrder, getAllOrders } from "@/lib/actions/order.actions";
 import Link from "next/link";
 
