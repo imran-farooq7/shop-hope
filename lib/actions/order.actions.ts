@@ -157,8 +157,20 @@ export const getOrdersSummary = async () => {
 		totalSales,
 	};
 };
-export const getAllOrders = async () => {
+export const getAllOrders = async ({ query }: { query: string }) => {
+	const queryFilter: Prisma.OrderWhereInput =
+		query && query !== "all"
+			? {
+					user: {
+						name: {
+							contains: query,
+							mode: "insensitive",
+						},
+					} as Prisma.StringFilter,
+			  }
+			: {};
 	const orders = await prisma.order.findMany({
+		where: queryFilter,
 		orderBy: {
 			createdAt: "desc",
 		},

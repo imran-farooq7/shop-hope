@@ -4,13 +4,32 @@ import Modal from "@/components/shared/modal/Modal";
 import { deleteOrder, getAllOrders } from "@/lib/actions/order.actions";
 import Link from "next/link";
 
-const OrdersPage = async () => {
+const OrdersPage = async ({
+	searchParams,
+}: {
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
 	const session = await auth();
 	if (session?.user.role !== "admin") throw new Error("User not authorized");
-	const orders = await getAllOrders();
+	const { query } = await searchParams;
+	const orders = await getAllOrders({ query: query as string });
+
 	return (
 		<div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-			<h1 className="text-2xl font-bold">Orders</h1>
+			<div className="flex items-center gap-3">
+				<h1 className="text-2xl font-bold">Orders</h1>
+				{query && (
+					<div className="flex gap-4 items-center">
+						<p className=" text-gray-700">Filter by "{query}"</p>
+						<Link
+							href={"/admin/orders"}
+							className="flex w-auto justify-center rounded-md bg-emerald-500 px-2 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+						>
+							Remove Filter
+						</Link>
+					</div>
+				)}
+			</div>{" "}
 			<div className="mt-8 flow-root">
 				<div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
 					<div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -28,6 +47,12 @@ const OrdersPage = async () => {
 										className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
 									>
 										DATE
+									</th>
+									<th
+										scope="col"
+										className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900"
+									>
+										BUYER
 									</th>
 									<th
 										scope="col"
@@ -63,6 +88,9 @@ const OrdersPage = async () => {
 										</td>
 										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
 											{order.createdAt.toLocaleDateString()}
+										</td>
+										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+											{order.user.name}
 										</td>
 										<td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
 											${Number(order.totalPrice)}
