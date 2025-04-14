@@ -3,12 +3,30 @@ import { deleteOrder } from "@/lib/actions/order.actions";
 import { getAllProducts } from "@/lib/actions/product.actions";
 import Link from "next/link";
 
-const ProductsPages = async () => {
+const ProductsPages = async ({
+	searchParams,
+}: {
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
+	const { query } = await searchParams;
 	const { products, productsCount } = await getAllProducts();
 	return (
 		<div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
 			<div className="flex justify-between">
-				<h1 className="text-2xl font-bold">Products</h1>
+				<div className="flex items-center gap-3">
+					<h1 className="text-2xl font-bold">Products</h1>
+					{query && (
+						<div className="flex gap-4 items-center">
+							<p className=" text-gray-700">Filter by "{query}"</p>
+							<Link
+								href={"/admin/products"}
+								className="flex w-auto justify-center rounded-md bg-emerald-500 px-2 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+							>
+								Remove Filter
+							</Link>
+						</div>
+					)}
+				</div>
 				<Link
 					href={"/admin/products/create"}
 					className="flex w-auto justify-center rounded-md bg-emerald-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-emerald-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"

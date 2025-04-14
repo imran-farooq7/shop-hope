@@ -4,6 +4,7 @@ import { UserIcon } from "lucide-react";
 import { Session, User } from "next-auth";
 import Link from "next/link";
 import UserMenu from "../shared/header/user-menu";
+import Search from "../search/search";
 
 const AdminNav = ({
 	user,
@@ -21,7 +22,7 @@ const AdminNav = ({
 			{({ open }) => (
 				<>
 					<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-						<div className="flex h-16 justify-between">
+						<div className="flex h-16 justify-between items-center">
 							<div className="flex">
 								<div className="flex gap-4 flex-shrink-0 items-center">
 									<Link href={"/"} className="text-2xl font-bold">
@@ -33,6 +34,7 @@ const AdminNav = ({
 									<Link href={"/admin/users"}>Users</Link>
 								</div>
 							</div>
+							<Search />
 							<div className="sm:ml-6 flex gap-4 sm:gap-8 items-center">
 								{user ? (
 									<UserMenu user={user} />
