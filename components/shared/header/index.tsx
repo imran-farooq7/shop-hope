@@ -4,6 +4,7 @@ import { ShoppingCart, UserIcon } from "lucide-react";
 import Link from "next/link";
 import UserMenu from "./user-menu";
 import { User } from "next-auth";
+import Search from "@/components/search/search";
 
 const Header = ({ user }: { user: User }) => {
 	return (
@@ -11,7 +12,7 @@ const Header = ({ user }: { user: User }) => {
 			{({ open }) => (
 				<>
 					<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-						<div className="flex h-16 justify-between">
+						<div className="flex h-16 items-center justify-between">
 							<div className="flex">
 								<div className="flex gap-4 flex-shrink-0 items-center">
 									<Link href={"/"} className="text-2xl font-bold">
@@ -21,6 +22,7 @@ const Header = ({ user }: { user: User }) => {
 									<Link href={"/user/profile"}>Profile</Link>
 								</div>
 							</div>
+							<Search isUser />
 							<div className="sm:ml-6 flex gap-4 sm:gap-8 items-center">
 								<Link href={"/cart"} className="flex gap-1">
 									<ShoppingCart className="text-black" />

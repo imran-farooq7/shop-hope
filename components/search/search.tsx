@@ -2,8 +2,10 @@
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
-
-const Search = () => {
+interface Props {
+	isUser?: boolean;
+}
+const Search = ({ isUser }: Props) => {
 	const [search, setSearch] = useState<string>("");
 	const router = useRouter();
 	const pathName = usePathname();
@@ -14,23 +16,31 @@ const Search = () => {
 		e.preventDefault();
 		if (search.trim() === "") return;
 		const searchParams = new URLSearchParams(search);
-		if (search !== "") {
-			searchParams.set("query", search);
-			if (pathName.includes(`/admin/products`)) {
-				router.push(`/admin/products?query=${searchParams.get("query")}`);
-			}
-			if (pathName.includes(`/admin/orders`)) {
-				router.push(`/admin/orders?query=${searchParams.get("query")}`);
-			}
-			if (pathName.includes(`/admin/users`)) {
-				console.log(search);
+		if (!isUser) {
+			if (search !== "") {
+				searchParams.set("query", search);
+				if (pathName.includes(`/admin/products`)) {
+					router.push(`/admin/products?query=${searchParams.get("query")}`);
+				}
+				if (pathName.includes(`/admin/orders`)) {
+					router.push(`/admin/orders?query=${searchParams.get("query")}`);
+				}
+				if (pathName.includes(`/admin/users`)) {
+					console.log(search);
 
-				router.push(`/admin/users?query=${searchParams.get("query")}`);
+					router.push(`/admin/users?query=${searchParams.get("query")}`);
+				}
+			} else {
+				searchParams.delete("query");
 			}
 		} else {
-			searchParams.delete("query");
+			if (search !== "") {
+				searchParams.set("q", search);
+				router.push(`/search?search=${searchParams.get("q")}`);
+			} else {
+				searchParams.delete("q");
+			}
 		}
-		// console.log(searchParams.getAll("q").toString());
 	};
 	return (
 		<form onSubmit={handleSubmit}>
