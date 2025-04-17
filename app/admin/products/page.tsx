@@ -9,7 +9,7 @@ const ProductsPages = async ({
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
 	const { query } = await searchParams;
-	const { products, productsCount } = await getAllProducts();
+	const { products } = await getAllProducts();
 	return (
 		<div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
 			<div className="flex justify-between">

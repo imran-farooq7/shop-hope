@@ -5,6 +5,7 @@ import { hashSync } from "bcryptjs";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { Address } from "../types";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 export const signInCredentials = async (
 	prevState: unknown,
 	formData: FormData
@@ -158,8 +159,18 @@ export const updateUserProfile = async (user: {
 		};
 	}
 };
-export const getAllUsers = async () => {
+export const getAllUsers = async ({ query }: { query: string }) => {
+	const queryFilter: Prisma.UserWhereInput =
+		query && query !== "all"
+			? {
+					name: {
+						contains: query,
+						mode: "insensitive",
+					} as Prisma.StringFilter,
+			  }
+			: {};
 	const users = await prisma.user.findMany({
+		where: queryFilter,
 		orderBy: {
 			createdAt: "asc",
 		},
