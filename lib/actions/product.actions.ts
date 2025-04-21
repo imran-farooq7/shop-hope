@@ -4,6 +4,7 @@ import { prisma } from "@/prisma/prisma";
 import { convertPrismaObjectToPlain } from "../utils";
 import { revalidatePath } from "next/cache";
 import { Product } from "../types";
+import { Prisma } from "@prisma/client";
 
 export const getProducts = async () => {
 	try {
@@ -41,8 +42,24 @@ export const getProductBySlug = async (slug: string) => {
 		};
 	}
 };
-export const getAllProducts = async () => {
-	const products = await prisma.product.findMany();
+export const getAllProducts = async ({ query }: { query: string }) => {
+	const queryFilter: Prisma.ProductWhereInput =
+		query && query !== "all"
+			? {
+					name: {
+						contains: query,
+						mode: "insensitive",
+					} as Prisma.StringFilter,
+			  }
+			: {};
+	const products = await prisma.product.findMany({
+		where: {
+			...queryFilter,
+		},
+		orderBy: {
+			createdAt: "asc",
+		},
+	});
 	const productsCount = await prisma.product.count();
 	return {
 		products,

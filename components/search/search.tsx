@@ -35,10 +35,10 @@ const Search = ({ isUser }: Props) => {
 			}
 		} else {
 			if (search !== "") {
-				searchParams.set("q", search);
-				router.push(`/search?search=${searchParams.get("q")}`);
+				searchParams.set("query", search);
+				router.push(`/search?query=${searchParams.get("query")}`);
 			} else {
-				searchParams.delete("q");
+				searchParams.delete("query");
 			}
 		}
 	};
