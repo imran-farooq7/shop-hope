@@ -1,12 +1,9 @@
+import { auth } from "@/auth";
 import AddToCart from "@/components/add-to-cart/add-to-cart";
+import ReviewsList from "@/components/reviews/reviews-list";
 import { getMyCart } from "@/lib/actions/cart.actions";
 import { getProductBySlug } from "@/lib/actions/product.actions";
-import {
-	CheckIcon,
-	ShieldCheckIcon,
-	StarIcon,
-	XMarkIcon,
-} from "@heroicons/react/20/solid";
+import { CheckIcon, StarIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -19,6 +16,7 @@ function classNames(...classes: string[]) {
 const ProductDetailsPage = async ({ params }: Props) => {
 	const { slug } = await params;
 	const { data: product } = await getProductBySlug(slug);
+	const session = await auth();
 	const cart = await getMyCart();
 	if (!product) notFound();
 	return (
@@ -129,6 +127,14 @@ const ProductDetailsPage = async ({ params }: Props) => {
 							/>{" "}
 						</div>
 					</section>
+				</div>
+				<div className="space-y-2">
+					<h2 className="text-xl font-bold">Recent reviews</h2>
+					<ReviewsList
+						productSlug={slug}
+						productId={product.id}
+						userId={session?.user.id!}
+					/>
 				</div>
 			</div>
 		</div>
