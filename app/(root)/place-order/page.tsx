@@ -92,7 +92,7 @@ const PlaceOrderPage = async () => {
 								<dd className="mt-2">
 									<address className="not-italic">
 										<span className="block">{userAddress.fullName}</span>
-										<span className="block">{userAddress.streetAddress}</span>
+										<span className="block">{userAddress.address}</span>
 										<span className="block">
 											{userAddress.city}, {userAddress.country},
 											{userAddress.postalCode}
